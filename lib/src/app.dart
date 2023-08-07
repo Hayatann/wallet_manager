@@ -27,9 +27,9 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  static const _pages = <Widget>[
-    HomePage(),
-    RecordPage(),
+  final _pages = <Widget>[
+    const HomePage(),
+    const RecordPage(),
   ];
 
   int _selectedIndex = 0;
