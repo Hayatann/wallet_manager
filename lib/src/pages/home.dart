@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -128,6 +129,37 @@ class HomePageState extends State<HomePage> {
                       onChanged: handleConsumePrice,
                     ),
                   ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(200, 50),
+                      backgroundColor: Colors.teal.shade600,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0))),
+                  onPressed: () {
+                    DatePicker.showDatePicker(
+                      context,
+                      showTitleActions: true,
+                      minTime: DateTime(1950, 1, 1),
+                      maxTime: DateTime.now(),
+                      onChanged: (date) {
+                        print("change $date");
+                      },
+                      onConfirm: (time) {
+                        print("confirm $time");
+                      },
+                      currentTime: DateTime.now(),
+                      locale: LocaleType.jp,
+                    );
+                  },
+                  child: const Text(
+                    "日付を選択",
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
               ),
               Container(
