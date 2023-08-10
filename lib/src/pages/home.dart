@@ -1,41 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+final consumeTitleProvider = StateProvider<String>((ref) => "");
+final consumeGenreProvider = StateProvider<String>((ref) => "");
+final consumePriceProvider = StateProvider<String>((ref) => "");
+final consumeManageDateProvider =
+    StateProvider<DateTime>((ref) => DateTime.now());
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
   @override
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
-  String _consumeTitle = ""; // 支出のタイトル
-  String _consumeGenre = ""; // 支出のジャンル
-  String _consumePrice = ""; // 支出の金額
-
-  // 支出のタイトルを更新する
-  void handleConsumeTitle(String e) {
-    setState(() {
-      _consumeTitle = e;
-    });
-  }
-
-  // 支出のジャンルを更新する
-  void handleConsumeGenre(String e) {
-    setState(() {
-      _consumeGenre = e;
-    });
-  }
-
-  // 支出の金額を更新する
-  void handleConsumePrice(String e) {
-    setState(() {
-      _consumePrice = e;
-    });
-  }
-
+class HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
+    StateController<String> consumeTitle =
+        ref.watch(consumeTitleProvider.notifier);
+    StateController<String> consumeGenre =
+        ref.watch(consumeGenreProvider.notifier);
+    StateController<String> consumePrice =
+        ref.watch(consumePriceProvider.notifier);
+    StateController<DateTime> consumeManageDate =
+        ref.watch(consumeManageDateProvider.notifier);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal.shade900,
@@ -52,7 +42,7 @@ class HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
                 child: Column(children: <Widget>[
                   Text(
-                    _consumeTitle,
+                    consumeTitle.state,
                     style: TextStyle(
                       color: Colors.teal.shade900,
                       fontSize: 40,
@@ -68,7 +58,10 @@ class HomePageState extends State<HomePage> {
                         labelText: "支出のタイトル",
                         hintText: "例: コンビニ弁当",
                         border: OutlineInputBorder()),
-                    onChanged: handleConsumeTitle,
+                    onChanged: (text) {
+                      consumeTitle.state = text;
+                      // print(consumeTitle.state);
+                    },
                   ),
                 ]),
               ),
@@ -77,7 +70,7 @@ class HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      _consumeGenre,
+                      consumeGenre.state,
                       style: TextStyle(
                         color: Colors.teal.shade900,
                         fontSize: 40,
@@ -93,7 +86,10 @@ class HomePageState extends State<HomePage> {
                           labelText: "支出のタイトル",
                           hintText: "例: 食費",
                           border: OutlineInputBorder()),
-                      onChanged: handleConsumeGenre,
+                      onChanged: (text) {
+                        consumeGenre.state = text;
+                        // print(consumeGenre.state);
+                      },
                     ),
                   ],
                 ),
@@ -103,7 +99,7 @@ class HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     Text(
-                      _consumePrice.toString(),
+                      consumePrice.state,
                       style: TextStyle(
                         color: Colors.teal.shade900,
                         fontSize: 40,
@@ -126,7 +122,10 @@ class HomePageState extends State<HomePage> {
                         FilteringTextInputFormatter.digitsOnly,
                         LengthLimitingTextInputFormatter(9)
                       ],
-                      onChanged: handleConsumePrice,
+                      onChanged: (text) {
+                        consumePrice.state = text;
+                        // print(consumePrice.state);
+                      },
                     ),
                   ],
                 ),
@@ -148,9 +147,11 @@ class HomePageState extends State<HomePage> {
                       maxTime: DateTime.now(),
                       onChanged: (date) {
                         print("change $date");
+                        consumeManageDate.state = date;
                       },
                       onConfirm: (time) {
                         print("confirm $time");
+                        consumeManageDate.state = time;
                       },
                       currentTime: DateTime.now(),
                       locale: LocaleType.jp,
