@@ -149,9 +149,9 @@ class HomePageState extends ConsumerState<HomePage> {
                         print("change $date");
                         consumeManageDate.state = date;
                       },
-                      onConfirm: (time) {
-                        print("confirm $time");
-                        consumeManageDate.state = time;
+                      onConfirm: (date) {
+                        consumeManageDate.state = date;
+                        print(consumeManageDate.state);
                       },
                       currentTime: DateTime.now(),
                       locale: LocaleType.jp,

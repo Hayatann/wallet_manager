@@ -38,6 +38,9 @@ dependencies:
   flutter_datetime_picker_plus: ^2.0.1
   flutter_hooks: ^0.20.0
   hooks_riverpod: ^2.3.7
+  sqflite: ^2.3.0
+  path_provider: ^2.1.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

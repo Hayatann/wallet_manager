@@ -1,7 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:wallet_manager/src/db/consumes.dart';
+import 'package:wallet_manager/src/pages/home.dart';
+import '../db/db_helper.dart';
 
-class RecordPage extends StatelessWidget {
+class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
+
+  @override
+  RecordPageState createState() => RecordPageState();
+}
+
+class RecordPageState extends State<RecordPage> {
+  List<Consumes> consumesList = [];
+  bool isLoading = false;
+
+  // initState()でConsumesの全データを取得
+  @override
+  void initState() {
+    super.initState();
+    getConsumesList();
+  }
+
+  // Consumesの全データを取得
+  Future getConsumesList() async {
+    setState(() {
+      isLoading = true;
+    });
+    consumesList = await DbHelper.instance.selectAllConsumes();
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,21 +41,19 @@ class RecordPage extends StatelessWidget {
           centerTitle: true,
           title: const Text('家計簿', style: TextStyle(color: Colors.white)),
         ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.all(40),
-              child: Row(
+        body: isLoading
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
                 children: <Widget>[
-                  Text("title", style: TextStyle(fontSize: 20)),
-                  Spacer(),
-                  Text("¥price", style: TextStyle(fontSize: 20)),
-                  Spacer(),
-                  Text("Genre", style: TextStyle(fontSize: 20)),
+                  Container(
+                    margin: const EdgeInsets.all(40),
+                    child: Row(
+                      children: <Widget>[],
+                    ),
+                  ),
                 ],
-              ),
-            ),
-          ],
-        ));
+              ));
   }
 }
