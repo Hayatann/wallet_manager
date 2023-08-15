@@ -4,56 +4,48 @@ import 'package:wallet_manager/src/db/consumes.dart';
 import 'package:wallet_manager/src/pages/home.dart';
 import '../db/db_helper.dart';
 
-class RecordPage extends StatefulWidget {
+final consumesListProvider =
+    FutureProvider.autoDispose<List<Consumes>>((ref) async {
+  final consumesList = await DbHelper.instance.selectAllConsumes();
+  return consumesList;
+});
+
+class RecordPage extends ConsumerStatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
 
   @override
   RecordPageState createState() => RecordPageState();
 }
 
-class RecordPageState extends State<RecordPage> {
-  List<Consumes> consumesList = [];
-  bool isLoading = false;
-
-  // initState()でConsumesの全データを取得
-  @override
-  void initState() {
-    super.initState();
-    getConsumesList();
-  }
-
-  // Consumesの全データを取得
-  Future getConsumesList() async {
-    setState(() {
-      isLoading = true;
-    });
-    consumesList = await DbHelper.instance.selectAllConsumes();
-    setState(() {
-      isLoading = false;
-    });
-  }
-
+class RecordPageState extends ConsumerState<RecordPage> {
   @override
   Widget build(BuildContext context) {
+    final consumesList = ref.watch(consumesListProvider);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.teal.shade900,
           centerTitle: true,
           title: const Text('家計簿', style: TextStyle(color: Colors.white)),
         ),
-        body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.all(40),
-                    child: Row(
-                      children: <Widget>[],
-                    ),
+        body: consumesList.when(data: (consumeList) {
+          return ListView.builder(
+              itemCount: consumeList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final consume = consumeList[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(consume.title),
+                    subtitle: Text(consume.genre),
+                    trailing: Text(consume.price.toString()),
                   ),
-                ],
-              ));
+                );
+              });
+        }, error: (error, stackTrace) {
+          return Text(error.toString());
+        }, loading: () {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }));
   }
 }
