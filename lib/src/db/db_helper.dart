@@ -1,4 +1,5 @@
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import './consumes.dart';
 
@@ -33,7 +34,9 @@ class DbHelper {
 
   // open db
   Future<Database> _initDB() async {
-    String path = join(await getDatabasesPath(), 'consumes.db');
+    final dbDirectory = await getApplicationSupportDirectory();
+    final dbFilePath = dbDirectory.path;
+    final path = join(dbFilePath, 'consumes.db');
 
     return await openDatabase(path,
         version: 1, onCreate: _onCreate); // onCreate:にはdbが無かったときの処理を書く
